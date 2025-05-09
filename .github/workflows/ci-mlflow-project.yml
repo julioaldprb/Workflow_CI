@@ -1,9 +1,10 @@
-# .workflow/ci-mlflow-project.yml
-name: CI – MLflow Project
+name: CI - MLflow Project
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -22,8 +23,17 @@ jobs:
           activate-environment: mlflow-env
           environment-file: MLProject/conda.yaml
 
-      - name: Run MLflow Project
+      - name: Verify Conda & Install MLflow
+        shell: bash -l {0}
         run: |
+          echo "CONDA_PREFIX is $CONDA_PREFIX"
+          which python
+          pip install mlflow
+
+      - name: Run MLflow Project
+        shell: bash -l {0}
+        run: |
+          conda activate mlflow-env
           mlflow run MLProject \
             -P input_data=MLProject/namadataset_preprocessing/Automobile_clean.csv \
             -P output_model_path=artifacts/model
@@ -33,4 +43,3 @@ jobs:
         with:
           name: trained-model
           path: artifacts/model
-"# trigger CI" 
