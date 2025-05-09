@@ -37,11 +37,12 @@ jobs:
             --input MLProject/namadataset_preprocessing/Automobile_clean.csv \
             --output artifacts/model
 
-      - name: Verifikasi isi folder artifacts
+      - name: Periksa isi artifacts
         shell: bash -l {0}
         run: |
-          echo "=== ISI ARTIFAKS FOLDER ==="
+          echo "=== LIST ARTIFAKS ==="
           ls -R artifacts
+
 
       - name: Upload artefak model
         uses: actions/upload-artifact@v3
