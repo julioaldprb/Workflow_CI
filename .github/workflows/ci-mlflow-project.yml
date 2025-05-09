@@ -1,5 +1,10 @@
 name: CI - MLflow Project
 
+# Tambahkan ini supaya upload-artifact bisa jalan
+permissions:
+  contents: write
+  actions: read
+
 on:
   push:
     branches:
@@ -39,6 +44,7 @@ jobs:
             -P output_model_path=artifacts/model
 
       - name: Upload model artifact
+        # pastikan kamu pakai uses, bukan run
         uses: actions/upload-artifact@v3
         with:
           name: trained-model
