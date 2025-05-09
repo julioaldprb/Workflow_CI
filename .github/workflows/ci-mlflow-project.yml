@@ -2,6 +2,7 @@ name: CI - MLflow Project (Python Run)
 
 permissions:
   contents: write
+  actions: write
 
 on:
   push:
