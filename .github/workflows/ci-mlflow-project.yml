@@ -1,4 +1,4 @@
-name: CI - MLflow Project (Python Run)
+name: CI - MLflow Project (Python Run with pip)
 
 permissions:
   contents: write
@@ -17,29 +17,23 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v3
 
-      - name: Setup Conda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.10
-          activate-environment: mlflow-env
-          environment-file: MLProject/conda.yaml
+          python-version: "3.10"
 
-      - name: Install dependencies tambahan
-        shell: bash -l {0}
+      - name: Install dependencies via pip
         run: |
-          conda activate mlflow-env
-          pip install mlflow
+          pip install --upgrade pip
+          pip install -r MLProject/requirements.txt
 
       - name: Jalankan skrip modelling.py
-        shell: bash -l {0}
         run: |
-          conda activate mlflow-env
           python MLProject/modelling.py \
             --input MLProject/namadataset_preprocessing/Automobile_clean.csv \
             --output artifacts/model
 
       - name: Periksa isi artifacts
-        shell: bash -l {0}
         run: |
           echo "=== LIST ARTIFAKS ==="
           ls -R artifacts
