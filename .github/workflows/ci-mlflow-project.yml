@@ -44,9 +44,8 @@ jobs:
           echo "=== LIST ARTIFAKS ==="
           ls -R artifacts
 
-
       - name: Upload artefak model
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@f76a0a58a6f3a317e7d3d64e4db2e2a105c29c62
         with:
           name: trained-model
           path: artifacts/model
