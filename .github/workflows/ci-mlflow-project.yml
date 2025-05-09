@@ -1,15 +1,11 @@
 name: CI - MLflow Project
 
-# Tambahkan ini supaya upload-artifact bisa jalan
 permissions:
   contents: write
-  actions: read
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -17,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout kode
         uses: actions/checkout@v3
 
-      - name: Set up Miniconda
+      - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
@@ -28,23 +24,25 @@ jobs:
           activate-environment: mlflow-env
           environment-file: MLProject/conda.yaml
 
-      - name: Verify Conda & Install MLflow
+      - name: Install MLflow
         shell: bash -l {0}
         run: |
-          echo "CONDA_PREFIX is $CONDA_PREFIX"
-          which python
           pip install mlflow
 
-      - name: Run MLflow Project
+      - name: Jalankan MLflow Project
         shell: bash -l {0}
         run: |
           conda activate mlflow-env
           mlflow run MLProject \
             -P input_data=MLProject/namadataset_preprocessing/Automobile_clean.csv \
-            -P output_model_path=artifacts/model
+            -P output_model_path=MLProject/artifacts/model
 
-      - name: Upload model artifact
-        # pastikan kamu pakai uses, bukan run
+      - name: Salin artefak ke folder upload
+        run: |
+          mkdir -p artifacts/model
+          cp -r MLProject/artifacts/model/* artifacts/model/
+
+      - name: Upload artefak model
         uses: actions/upload-artifact@v3
         with:
           name: trained-model
