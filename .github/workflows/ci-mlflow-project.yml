@@ -45,7 +45,7 @@ jobs:
           ls -R artifacts
 
       - name: Upload artefak model
-        uses: actions/upload-artifact@f76a0a58a6f3a317e7d3d64e4db2e2a105c29c62
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: trained-model
           path: artifacts/model
