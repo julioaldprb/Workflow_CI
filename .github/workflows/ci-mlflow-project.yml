@@ -1,4 +1,4 @@
-name: CI - MLflow Project
+name: CI - MLflow Project (Python Run)
 
 permissions:
   contents: write
@@ -9,40 +9,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-mlflow-project:
+  run-mlflow-script:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout kode
         uses: actions/checkout@v3
 
-      - name: Setup Miniconda
+      - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-update-conda: true
           python-version: 3.10
           activate-environment: mlflow-env
           environment-file: MLProject/conda.yaml
 
-      - name: Install MLflow
-        shell: bash -l {0}
-        run: pip install mlflow
-
-      - name: Jalankan MLflow Project
+      - name: Install dependencies tambahan
         shell: bash -l {0}
         run: |
           conda activate mlflow-env
-          # STORAGE-DIR . agar project di-clone ke cwd dan artefak tertulis di ./artifacts/model
-          mlflow run MLProject \
-            -P input_data=MLProject/namadataset_preprocessing/Automobile_clean.csv \
-            -P output_model_path=artifacts/model \
-            --storage-dir .
+          pip install mlflow
 
-      - name: Tampilkan isi artifacts
+      - name: Jalankan skrip modelling.py
         shell: bash -l {0}
         run: |
-          echo "=== DIREKTORI ARTIFAKS ==="
-          ls -R .
+          conda activate mlflow-env
+          python MLProject/modelling.py \
+            --input MLProject/namadataset_preprocessing/Automobile_clean.csv \
+            --output artifacts/model
+
+      - name: Verifikasi isi folder artifacts
+        shell: bash -l {0}
+        run: |
+          echo "=== ISI ARTIFAKS FOLDER ==="
+          ls -R artifacts
 
       - name: Upload artefak model
         uses: actions/upload-artifact@v3
