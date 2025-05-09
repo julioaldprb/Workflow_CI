@@ -16,7 +16,7 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v3
 
-      - name: Set up Conda
+      - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
@@ -26,21 +26,23 @@ jobs:
 
       - name: Install MLflow
         shell: bash -l {0}
-        run: |
-          pip install mlflow
+        run: pip install mlflow
 
       - name: Jalankan MLflow Project
         shell: bash -l {0}
         run: |
           conda activate mlflow-env
+          # STORAGE-DIR . agar project di-clone ke cwd dan artefak tertulis di ./artifacts/model
           mlflow run MLProject \
             -P input_data=MLProject/namadataset_preprocessing/Automobile_clean.csv \
-            -P output_model_path=MLProject/artifacts/model
+            -P output_model_path=artifacts/model \
+            --storage-dir .
 
-      - name: Salin artefak ke folder upload
+      - name: Tampilkan isi artifacts
+        shell: bash -l {0}
         run: |
-          mkdir -p artifacts/model
-          cp -r MLProject/artifacts/model/* artifacts/model/
+          echo "=== DIREKTORI ARTIFAKS ==="
+          ls -R .
 
       - name: Upload artefak model
         uses: actions/upload-artifact@v3
